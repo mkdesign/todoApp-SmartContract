@@ -2,28 +2,43 @@ pragma solidity 0.5.8;
 
 contract Owner {
     
-    address oublic owner;
+    address public owner;
     constructor() public{
         owner = msg.sender;
     }
     
     modifier onlyOwner(){
-        require(msg.sender == owner, "You are not authorized for this process.")
+        require(msg.sender == owner, "You are not authorized for this process.");
         _;
     }
 }
 
 contract todoApp is Owner{
+    enum TasksStatus {DONE, OPEN, ARCHIVED}
     uint256 public taskCounter;
     
     struct Task {
-        uint32 id;
+        uint256 id;
         string todoTask;
-        bool done;
+        TasksStatus taskStatus;
     }
     
-    mapping(uint => Task) public tasks;
+    mapping (uint => Task) public tasks;
     
+    
+    function createTask(string memory _todoTask) public  {
+        taskCounter++;
+        tasks[taskCounter] = Task(taskCounter, _todoTask, TasksStatus.OPEN);
+    }
+    
+    function doneTask(uint256 _taskID) public {
+        tasks[_taskID].taskStatus = TasksStatus.DONE;
+    }
+    
+    function getCounter() public returns(uint256) {
+        return taskCounter;
+    }
+
     
     
 }
