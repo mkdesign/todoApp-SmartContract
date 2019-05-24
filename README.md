@@ -2,6 +2,10 @@
 You can see details of <a>this assignment</a> on etherscan.
 ---
 
+### Functions
+Basicaly, in Todo apps, base on the number of states for tasks, we have functions. In this case, we have 3 different states for each task : ```OPEN``` , ```DONE``` and ```ARCHIVED``` .
+
+- <b>Create Task<b> : 
 
 
 ---
