@@ -5,6 +5,7 @@ contract todoApp {
     enum TasksStatus {DONE, OPEN, ARCHIVED}
     event taskArchived(uint256 taskID, string todoContent);
     uint256 public taskCounter;
+    uint256 public itemsInTasks;
     uint256 balance;
     
     struct Task {
@@ -15,6 +16,7 @@ contract todoApp {
     }
     
     mapping (uint => Task) public tasks;
+    mapping(uint => Task) public archivedTasks;
     
     constructor() payable public{
         owner = msg.sender;
@@ -33,6 +35,7 @@ contract todoApp {
     
     function createTask(string memory _todoTask) public payable  positiveCredit {
         taskCounter++;
+        itemsInTasks++;
         tasks[taskCounter] = Task(taskCounter, _todoTask, TasksStatus.OPEN, now);
         balance -= 100;
     }
@@ -44,9 +47,17 @@ contract todoApp {
     }
     
     function archiveTask(uint256 _taskID) private onlyOwner {
-        if(now > tasks[_taskID].timeStamp + 30 days) {
-            tasks[_taskID].taskStatus = TasksStatus.ARCHIVED;
-            emit taskArchived(_taskID, tasks[_taskID].todoTask);
+        tasks[_taskID].taskStatus = TasksStatus.ARCHIVED;
+        archivedTasks[_taskID] = Task(_taskID, tasks[_taskID].todoTask, tasks[_taskID].taskStatus, tasks[_taskID].timeStamp);
+        delete tasks[_taskID];
+        itemsInTasks--;
+        emit taskArchived(_taskID, tasks[_taskID].todoTask);
+        if(itemsInTasks == 0) {
+            endContract();
         }
+    }
+    
+    function endContract()  payable public onlyOwner {
+          selfdestruct(msg.sender); 
     }
 }

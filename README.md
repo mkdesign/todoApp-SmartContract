@@ -5,10 +5,26 @@ You can see details of <a>this assignment</a> on etherscan.
 ### Functions
 Basicaly, in Todo apps, base on the number of states for tasks, we have functions. In this case, we have 3 different states for each task : ```OPEN``` , ```DONE``` and ```ARCHIVED``` .
 
-- createTask : 
-    -- input : uint256 _taskID
+- ```createTask (public, payable)``` : 
+-- input  : uint256 _taskID
+in order to create any task your balance must be above 4000 wei. For each task you pay 100 wei. The positive credit modifier is there to check the balance.
     
+- ```doneTask(public) ```: 
 
+- ```archiveTask(private)``` :
+ The reasone this function is private, is that when you done all the tasks, you can destroy the whole function. 
+Each time an item gets archvied, it gets removed from tasks map and moves to the archivedTasks map. The moment the counter for tasks mapping gets 0, ```endContract``` function gets called.
+After all this, the event ```taskArchvied``` emits.
+
+- ```endContract(public, payable)``` : 
+The moment you done all your todo items, this functions gets called automatically. The owner, on the other hand, can call this function and receive the rest of wei in the contract.
+
+---
+
+### Events : 
+
+- ```taskArchived``` : 
+This event
 
 ### Use Case : TODO App
 
