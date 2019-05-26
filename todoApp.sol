@@ -5,6 +5,7 @@ contract todoApp {
     enum TasksStatus {DONE, OPEN, ARCHIVED}
     event taskArchived(uint256 taskID, string todoContent);
     uint256 public taskCounter;
+    uint256 balance;
     
     struct Task {
         uint256 id;
@@ -15,8 +16,9 @@ contract todoApp {
     
     mapping (uint => Task) public tasks;
     
-    constructor() public{
+    constructor() payable public{
         owner = msg.sender;
+        balance = msg.value;
     }
     
     modifier onlyOwner(){
@@ -24,10 +26,15 @@ contract todoApp {
         _;
     }
     
+    modifier positiveCredit(){
+        require(balance > 4000 wei , "You need to at least put 2 Ethers in order to use this contract");
+        _;
+    }
     
-    function createTask(string memory _todoTask) public  {
+    function createTask(string memory _todoTask) public payable  positiveCredit {
         taskCounter++;
         tasks[taskCounter] = Task(taskCounter, _todoTask, TasksStatus.OPEN, now);
+        balance -= 100;
     }
     
     function doneTask(uint256 _taskID) public {
